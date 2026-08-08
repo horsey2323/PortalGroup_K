@@ -1,0 +1,3 @@
+{% extends 'base.html' %}
+{% block title %}Видалити матеріал{% endblock %}
+{% block content %}<div class="card shadow-sm border-0 mx-auto" style="max-width:600px"><div class="card-body p-4"><h1 class="h3">Видалити матеріал?</h1><p>«{{ object.title }}» буде видалено. Сам файл на сервері може потребувати очищення адміністратором.</p><form method="post">{% csrf_token %}<button class="btn btn-danger">Видалити</button> <a class="btn btn-outline-secondary" href="{% url 'materials:detail' object.pk %}">Скасувати</a></form></div></div>{% endblock %}

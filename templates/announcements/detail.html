@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}{{ announcement.title }} — Оголошення{% endblock %}
+{% block content %}
+<article class="card shadow-sm border-0"><div class="card-body p-md-4">
+  <div class="d-flex justify-content-between gap-3"><div><h1 class="h2">{{ announcement.title }}</h1><p class="text-muted"><i class="bi bi-person"></i> {{ announcement.author.username }} · {{ announcement.created_at|date:'d.m.Y, H:i' }}</p></div>
+  {% if user.is_authenticated and user.role == 'moderator' or user.is_authenticated and user.role == 'admin' or user.is_superuser %}<div class="text-nowrap"><a class="btn btn-outline-primary btn-sm" href="{% url 'announcements:edit' announcement.pk %}">Редагувати</a> <a class="btn btn-outline-danger btn-sm" href="{% url 'announcements:delete' announcement.pk %}">Видалити</a></div>{% endif %}</div>
+  <div class="fs-6" style="white-space: pre-line">{{ announcement.content }}</div>
+</div></article>
+<a class="btn btn-link mt-3 px-0" href="{% url 'announcements:list' %}">← До всіх оголошень</a>
+{% endblock %}

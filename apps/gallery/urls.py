@@ -1,22 +1,12 @@
-from django.contrib import admin
-from .models import Album, Photo
+from django.urls import path
 
+from . import views
 
-class PhotoInline(admin.TabularInline):
-    model = Photo
-    extra = 1
+app_name = 'gallery'
 
-
-@admin.register(Album)
-class AlbumAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'created_at')
-    list_filter = ('created_at', 'author')
-    search_fields = ('title', 'description')
-    inlines = [PhotoInline]
-
-
-@admin.register(Photo)
-class PhotoAdmin(admin.ModelAdmin):
-    list_display = ('album', 'caption', 'uploaded_by', 'uploaded_at')
-    list_filter = ('uploaded_at', 'album')
-    search_fields = ('caption',)
+urlpatterns = [
+    path('', views.album_list, name='album_list'),
+    path('create/', views.album_create, name='album_create'),
+    path('<int:pk>/', views.album_detail, name='album_detail'),
+    path('<int:album_pk>/upload/', views.photo_upload, name='photo_upload'),
+]
