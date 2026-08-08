@@ -2,7 +2,7 @@ from django.urls import path
 
 from . import views
 
-app_name = 'surveys'
+app_name = 'votings'
 
 urlpatterns = [
     path('<int:survey_id>/start/', views.start_survey, name='start'),
