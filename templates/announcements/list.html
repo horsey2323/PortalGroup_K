@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Оголошення — Портал групи{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div><h1 class="h2 mb-1">Оголошення</h1><p class="text-muted mb-0">Важливі повідомлення для всієї групи</p></div>
+  {% if user.is_authenticated and user.role == 'moderator' or user.is_authenticated and user.role == 'admin' or user.is_superuser %}<a class="btn btn-primary" href="{% url 'announcements:create' %}"><i class="bi bi-plus-lg"></i> Додати</a>{% endif %}
+</div>
+{% for announcement in announcements %}
+  <article class="card shadow-sm mb-3 border-0">
+    <div class="card-body">
+      <h2 class="h4"><a class="text-decoration-none" href="{% url 'announcements:detail' announcement.pk %}">{{ announcement.title }}</a></h2>
+      <p class="card-text text-secondary mb-3">{{ announcement.content|truncatechars:220 }}</p>
+      <small class="text-muted"><i class="bi bi-person"></i> {{ announcement.author.username }} · <i class="bi bi-clock"></i> {{ announcement.created_at|date:'d.m.Y, H:i' }}</small>
+    </div>
+  </article>
+{% empty %}<div class="alert alert-info">Оголошень поки немає.</div>{% endfor %}
+{% include 'pagination.html' %}
+{% endblock %}
