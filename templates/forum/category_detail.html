@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} - Форум{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'forum:category_list' %}">Форум</a></li>
+        <li class="breadcrumb-item active">{{ category.name }}</li>
+    </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+        <h2 class="fw-bold mb-1">{{ category.name }}</h2>
+        {% if category.description %}
+            <p class="text-muted mb-0">{{ category.description }}</p>
+        {% endif %}
+    </div>
+    {% if user.role == 'moderator' or user.role == 'admin' or user.is_superuser %}
+        <a href="{% url 'forum:category_delete' category.pk %}" class="btn btn-outline-danger btn-sm rounded-3">
+            <i class="bi bi-trash me-1"></i>Видалити тему
+        </a>
+    {% endif %}
+</div>
+
+<div class="mb-4">
+    {% for message in messages_list %}
+        <div class="card mb-2 border-0 shadow-sm">
+            <div class="card-body py-2">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="fw-semibold">
+                        <i class="bi bi-person-circle me-1"></i>{{ message.author.username }}
+                    </span>
+                    <span class="text-muted small">{{ message.created_at|date:"d.m.Y H:i" }}</span>
+                </div>
+                <p class="mb-0">{{ message.text|linebreaksbr }}</p>
+            </div>
+        </div>
+    {% empty %}
+        <div class="alert alert-info">Поки що немає повідомлень. Будьте першим!</div>
+    {% endfor %}
+</div>
+
+{% if user.is_authenticated %}
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <h6 class="fw-semibold mb-3"><i class="bi bi-pencil me-1"></i>Написати повідомлення</h6>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.text }}
+                {% for error in form.text.errors %}
+                    <div class="text-danger small mt-1">{{ error }}</div>
+                {% endfor %}
+                <div class="d-grid mt-3">
+                    <button type="submit" class="btn btn-primary rounded-3">
+                        <i class="bi bi-send me-1"></i>Надіслати
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% else %}
+    <div class="alert alert-secondary">
+        Щоб залишити повідомлення, <a href="{% url 'accounts:login' %}">увійдіть в акаунт</a>.
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Профіль {{ profile_user.username }} - Портал групи{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+        <div class="card shadow border-0 rounded-4 overflow-hidden">
+            <div class="bg-primary text-white p-4 text-center position-relative" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+                <div class="mb-3">
+                    {% if profile_user.avatar %}
+                        <img src="{{ profile_user.avatar.url }}" alt="{{ profile_user.username }}" class="rounded-circle img-thumbnail shadow-sm" style="width: 130px; height: 130px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-white text-primary d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 130px; height: 130px;">
+                            <i class="bi bi-person-fill display-1"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <h3 class="fw-bold mb-1">
+                    {% if profile_user.get_full_name %}{{ profile_user.get_full_name }}{% else %}{{ profile_user.username }}{% endif %}
+                </h3>
+                <p class="mb-2 opacity-75">@{{ profile_user.username }}</p>
+                <div>
+                    <span class="badge {% if profile_user.role == 'admin' or profile_user.is_superuser %}bg-danger{% elif profile_user.role == 'moderator' %}bg-warning text-dark{% else %}bg-secondary{% endif %} fs-6 px-3 py-2 rounded-pill shadow-sm">
+                        <i class="bi bi-shield-check me-1"></i>{{ profile_user.get_role_display }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="p-3 bg-light rounded-3 border">
+                            <small class="text-muted d-block mb-1"><i class="bi bi-envelope me-1"></i>Email</small>
+                            <span class="fw-semibold text-dark">{{ profile_user.email|default:"Не вказано" }}</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 bg-light rounded-3 border">
+                            <small class="text-muted d-block mb-1"><i class="bi bi-telephone me-1"></i>Телефон</small>
+                            <span class="fw-semibold text-dark">{{ profile_user.phone|default:"Не вказано" }}</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 bg-light rounded-3 border">
+                            <small class="text-muted d-block mb-1"><i class="bi bi-cake2 me-1"></i>Дата народження</small>
+                            <span class="fw-semibold text-dark">
+                                {% if profile_user.date_of_birth %}
+                                    {{ profile_user.date_of_birth|date:"d.m.Y" }}
+                                {% else %}
+                                    Не вказано
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 bg-light rounded-3 border">
+                            <small class="text-muted d-block mb-1"><i class="bi bi-calendar-check me-1"></i>Дата реєстрації</small>
+                            <span class="fw-semibold text-dark">{{ profile_user.date_joined|date:"d.m.Y" }}</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="p-3 bg-light rounded-3 border">
+                            <small class="text-muted d-block mb-1"><i class="bi bi-card-text me-1"></i>Про себе</small>
+                            <p class="mb-0 text-dark" style="white-space: pre-line;">{{ profile_user.bio|default:"Користувач ще не додав інформацію про себе." }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 justify-content-end mt-4 pt-3 border-top">
+                    {% if user == profile_user %}
+                        <a href="{% url 'accounts:profile_edit' %}" class="btn btn-primary rounded-3 px-4 fw-semibold">
+                            <i class="bi bi-pencil-square me-1"></i>Редагувати профіль
+                        </a>
+                    {% endif %}
+
+                    {% if user.role == 'admin' or user.is_superuser %}
+                        {% if user != profile_user %}
+                            <a href="{% url 'accounts:user_role_edit' profile_user.pk %}" class="btn btn-warning rounded-3 px-4 fw-semibold">
+                                <i class="bi bi-shield-lock me-1"></i>Змінити роль
+                            </a>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if user.role == 'moderator' or user.role == 'admin' or user.is_superuser %}
+                        <a href="{% url 'accounts:user_list' %}" class="btn btn-outline-secondary rounded-3 px-3">
+                            <i class="bi bi-arrow-left me-1"></i>До списку користувачів
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

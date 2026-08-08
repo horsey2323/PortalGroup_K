@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Нова тема - Форум{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-header bg-dark text-white text-center py-3 rounded-top-4">
+                <h4 class="mb-0 fw-bold"><i class="bi bi-plus-circle me-2"></i>Нова тема форуму</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="{{ form.name.id_for_label }}" class="form-label fw-semibold">Назва теми</label>
+                        {{ form.name }}
+                        {% for error in form.name.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label fw-semibold">Опис</label>
+                        {{ form.description }}
+                        {% for error in form.description.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-3 fw-bold">
+                            <i class="bi bi-check-lg me-1"></i>Створити
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

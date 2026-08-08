@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Форум - Портал групи{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0"><i class="bi bi-chat-square-text me-2"></i>Форум</h2>
+    {% if user.role == 'moderator' or user.role == 'admin' or user.is_superuser %}
+        <a href="{% url 'forum:category_create' %}" class="btn btn-primary rounded-3">
+            <i class="bi bi-plus-lg me-1"></i>Нова тема
+        </a>
+    {% endif %}
+</div>
+
+{% if categories %}
+    <div class="list-group shadow-sm">
+        {% for category in categories %}
+            <a href="{% url 'forum:category_detail' category.pk %}" class="list-group-item list-group-item-action py-3">
+                <div class="d-flex w-100 justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1 fw-semibold">{{ category.name }}</h5>
+                        {% if category.description %}
+                            <p class="mb-1 text-muted small">{{ category.description }}</p>
+                        {% endif %}
+                    </div>
+                    <span class="badge bg-secondary rounded-pill">
+                        {{ category.messages.count }} <i class="bi bi-chat-dots ms-1"></i>
+                    </span>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        Поки що немає жодної теми.
+        {% if user.role == 'moderator' or user.role == 'admin' or user.is_superuser %}Створіть першу!{% endif %}
+    </div>
+{% endif %}
+{% endblock %}
